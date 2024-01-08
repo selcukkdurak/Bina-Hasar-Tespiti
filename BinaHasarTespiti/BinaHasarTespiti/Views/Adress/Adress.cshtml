@@ -1,0 +1,253 @@
+﻿@model List<BinaHasarTespiti.Models.Adress>
+
+
+<meta charset="utf-8" />
+<title>Adres Sorgulama Ekranı</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta content="Premium Multipurpose Admin & Dashboard Template" name="description" />
+<meta content="Themesbrand" name="author" />
+
+<!-- App favicon -->
+<link rel="shortcut icon" href="~/velzon/assets/images/favicon.ico">
+
+<!-- gridjs css -->
+<link rel="stylesheet" href="~/velzon/assets/libs/gridjs/theme/mermaid.min.css">
+
+<!-- Layout config Js -->
+<script src="~/velzon/assets/js/layout.js"></script>
+<!-- Bootstrap Css -->
+<link href="~/velzon/assets/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+<!-- Icons Css -->
+<link href="~/velzon/assets/css/icons.min.css" rel="stylesheet" type="text/css" />
+<!-- App Css-->
+<link href="~/velzon/assets/css/app.min.css" rel="stylesheet" type="text/css" />
+<!-- custom Css-->
+<link href="~/velzon/assets/css/custom.min.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin="" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+        crossorigin=""></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.js"
+        integrity="sha512-+k1pnlgt4F1H8L7t3z95o3/KO+o78INEcXTbnoJQ/F2VqDVhWoaiVml/OEHv9HsVgxUaVW+IbiZPUJQfF/YxZw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<style>
+    .mydiv {
+        padding: 2px 10px;
+    }
+
+    #map {
+        height: 500px;
+    }
+</style>
+
+<script>
+    $(document).ready(function () {
+        var map = L.map('map').setView([38.317, 38.35], 13);
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; <a href="https://ozal.edu.tr/">Malatya Turgut Özal Üniversitesi</a>'
+        }).addTo(map);
+    });
+    function modalAc() {
+        $('#kayitmodal').modal('show');
+    }
+
+    function modalKapat() {
+        $('#kayitmodal').modal('toggle');
+    }
+</script>
+
+<div class="mydiv">
+    <h5>Adres İle Sorgulama</h5><hr />
+</div>
+
+<button type="button" class="btn btn-primary" onclick="modalAc()">
+    Yeni Kayıt Ekle
+</button>
+<br />
+<br />
+<!-- Modal -->
+<div class="modal fade" id="kayitmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Adres Ekle</h5>
+                <button type="button" class="close" onclick="modalKapat()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="/Adress/Adress" method="post">
+
+                <div class="modal-body">
+
+                    <div class="form-horizontal">
+
+                        <div class="col-xs-12 col-sm-9 mb-3, form-group">
+                            <label class="form-label" for="il">İl</label>
+                            <select class="form-select" id="il" name="il"
+                                    inputmode="text" aria-describedby="il-error" aria-invalid="false">
+                                <option value="1">Adana</option>
+                                <option value="2">Adıyaman</option>
+                                <option value="74">Bartın</option>
+                                <option value="72">Batman</option>
+                                <option value="12">Bingöl</option>
+                                <option value="21">Diyarbakır</option>
+                                <option value="81">Düzce</option>
+                                <option value="23">Elazığ</option>
+                                <option value="27">Gaziantep</option>
+                                <option value="31">Hatay</option>
+                                <option value="46">Kahramanmaraş</option>
+                                <option value="78">Karabük</option>
+                                <option value="38">Kayseri</option>
+                                <option value="79">Kilis</option>
+                                <option value="44">Malatya</option>
+                                <option value="47">Mardin</option>
+                                <option value="51">Niğde</option>
+                                <option value="80">Osmaniye</option>
+                                <option value="58">Sivas</option>
+                                <option value="63">Şanlıurfa</option>
+                                <option value="62">Tunceli</option>
+
+                            </select>
+                        </div>
+                        <div class="col-xs-12 col-sm-9 mb-3, form-group">
+                            <label class="form-label" for="ilce">İlçe</label>
+                            <select class="form-select" id="ilce" name="ilce">
+                            </select>
+                        </div>
+                        <div class="col-xs-12 col-sm-9 mb-3, form-group">
+                            <label class="form-label" for="mahalle">Mahalle</label>
+                            <select class="form-select" id="mahalle" name="mahalle">
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-3">Sokak</label>
+                            <div class="col-md-9">
+                                @Html.TextBox("sokak", null, new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-3">Bina Numarası</label>
+                            <div class="col-md-9">
+                                @Html.TextBox("binaNo", null, new { @class = "form-control" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="modalKapat()">Kapat</button>
+                    <button type="submit" class="btn btn-primary">Kaydet</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title mb-0">Sorgu Sonucu</h4>
+            </div>
+            <div class="card-body">
+                <div id="table-card" class="table-card">
+                    <div role="complementary" class="gridjs gridjs-container" style="width: 100%;">
+                        <div class="gridjs-wrapper" style="height: auto">
+
+                            <table role="grid" class="gridjs-table" style="height: auto;">
+                                <thead class="gridjs-th">
+                                    <tr class="gridjs-tr">
+                                        <th data-column-id="il" class="gridjs-th gridjs-th-sort" tabindex="0">
+                                            <div class="gridjs-th-content">İl</div>
+                                            <button tabindex="-1" aria-label="Sort column ascending" title="Sort column ascending" class="gridjs-sort-neutral"></button>
+                                        </th>
+                                        <th data-column-id="ilce" class="gridjs-th gridjs-th-sort" tabindex="0">
+                                            <div class="gridjs-th-content">İlçe</div>
+                                            <button tabindex="-1" aria-label="Sort column ascending" title="Sort column ascending" class="gridjs-sort-neutral"></button>
+                                        </th>
+                                        <th data-column-id="mahalle" class="gridjs-th gridjs-th-sort" tabindex="0">
+                                            <div class="gridjs-th-content">Mahalle</div>
+                                            <button tabindex="-1" aria-label="Sort column ascending" title="Sort column ascending" class="gridjs-sort-neutral"></button>
+                                        </th>
+                                        <th data-column-id="sokak" class="gridjs-th gridjs-th-sort" tabindex="0">
+                                            <div class="gridjs-th-content">Sokak</div>
+                                            <button tabindex="-1" aria-label="Sort column ascending" title="Sort column ascending" class="gridjs-sort-neutral"></button>
+                                        </th>
+                                        <th data-column-id="binaNo" class="gridjs-th gridjs-th-sort" tabindex="0">
+                                            <div class="gridjs-th-content">Bina No</div>
+                                            <button tabindex="-1" aria-label="Sort column ascending" title="Sort column ascending" class="gridjs-sort-neutral"></button>
+                                        </th>
+                                        <th data-column-id="durum" class="gridjs-th gridjs-th-sort" tabindex="0">
+                                            <div class="gridjs-th-content">Durum</div>
+                                            <button tabindex="-1" aria-label="Sort column ascending" title="Sort column ascending" class="gridjs-sort-neutral"></button>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody class="gridjs-tbody">
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr class="gridjs-tr">
+                                            <td data-column-id="il" class="gridjs-td">@item.il</td>
+                                            <td data-column-id="ilce" class="gridjs-td">@item.ilce</td>
+                                            <td data-column-id="mahalle" class="gridjs-td">@item.mahalle</td>
+                                            <td data-column-id="sokak" class="gridjs-td">@item.sokak</td>
+                                            <td data-column-id="binaNo" class="gridjs-td">@item.binaNo</td>
+                                            <td data-column-id="durum" class="gridjs-td">@item.durum</td>
+                                        </tr>
+
+                                    }
+                                </tbody>
+                            </table>
+
+                        </div>
+                        <div class="gridjs-footer">
+                            <div class="gridjs-pagination">
+                                <div role="status" aria-live="polite" class="gridjs-summary" title="Sayfa 1 / 2">
+                                    <b>10</b>
+                                    "Sonuçtan"
+                                    <b>1</b>
+                                    "ila"
+                                    <b>5</b>
+                                    "arası gösteriliyor"
+                                </div>
+                                <div class="gridjs-pages">
+                                    <button tabindex="0" role="button" disabled title="Previous" aria-label="Previous">Öncesi</button>
+                                    <button tabindex="0" role="button" class="gridjs-currentPage" title="Page 1" aria-label="Page 1">1</button>
+                                    <button tabindex="0" role="button" title="Page 2" aria-label="Page 2">2</button>
+                                    <button tabindex="0" role="button" title="Next" aria-label="Next">Sonraki</button>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div id="gridjs-temp" class="gridjs-temp"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="map" style="margin-bottom:50px;"></div>
+
+<!-- JAVASCRIPT -->
+
+
+<script src="~/velzon/assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="~/velzon/assets/libs/simplebar/simplebar.min.js"></script>
+<script src="~/velzon/assets/libs/node-waves/waves.min.js"></script>
+<script src="~/velzon/assets/libs/feather-icons/feather.min.js"></script>
+<script src="~/velzon/assets/js/pages/plugins/lord-icon-2.1.0.js"></script>
+<script src="~/velzon/assets/js/plugins.js"></script>
+
+<!-- prismjs plugin -->
+<script src="~/velzon/assets/libs/prismjs/prism.js"></script>
+
+<!-- gridjs js -->
+<script src="~/velzon/assets/libs/gridjs/gridjs.umd.js"></script>
+<!-- gridjs init -->
+<script src="~/velzon/assets/js/pages/gridjs.init.js"></script>
+
+<!-- App js -->
+<script src="~/velzon/assets/js/app.js"></script>
